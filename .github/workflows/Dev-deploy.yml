@@ -10,3 +10,12 @@ jobs:
     steps:
       - name: deploy
         run: echo "hello dev"
+        
+  deploy-qa:
+    name: Deploy to QA
+    if: needs.Dev_Deployment.result == 'success'
+    runs-on: ubuntu-latest
+    environment: Qa
+    steps:
+      - name: deploy
+        run: echo "hello QA"
