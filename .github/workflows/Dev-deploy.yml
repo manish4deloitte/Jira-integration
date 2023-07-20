@@ -13,8 +13,8 @@ jobs:
         
   deploy-qa:
     name: Deploy to QA
-    if: needs.Dev_Deployment.result == 'success'
     runs-on: ubuntu-latest
+    if: needs.Dev_Deployment.result == 'success'
     environment: Qa
     steps:
       - name: deploy
