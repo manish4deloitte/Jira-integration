@@ -1,7 +1,4 @@
 name: Deployment
-
-concurrency: Development
-#
 on:
   pull_request:
     types:
