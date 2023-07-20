@@ -1,17 +1,40 @@
-name: QA deployment
-
-concurrency: QA
+name: QA Deployment
 
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ["Dev-Deployment"]
+    workflows: ["Deployment"]
     types:
       - completed
+
 jobs:
-  QA_Deployment:
+  qa_deployment:
     runs-on: ubuntu-latest
-    environment: QA
+
+    #steps:
+      #- name: Checkout code
+        #uses: actions/checkout@v2
+  approval:
+    if: github.event_name == 'workflow_run' && github.event.workflow == 'Deployment' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+
     steps:
-      - name: deploy
+      - name: Request approval
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const { data: pullRequest } = await github.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.workflow_run.pull_requests[0].number
+            });
+
+            const request = await github.pulls.createReviewRequest({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.workflow_run.pull_requests[0].number,
+              reviewers: [pullRequest.user.login]
+            });
+
+      - name: message
         run: echo "hello QA"
