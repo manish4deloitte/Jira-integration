@@ -1,0 +1,17 @@
+name: QA deployment
+
+concurrency: QA
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Dev-Deployment"]
+    types:
+      - completed
+jobs:
+  QA_Deployment:
+    runs-on: ubuntu-latest
+    environment: QA
+    steps:
+      - name: deploy
+        run: echo "hello QA"
