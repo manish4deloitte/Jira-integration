@@ -1,1 +1,15 @@
+name: Deployment
 
+concurrency: Development
+
+on:
+  pull_request:
+    types:
+      - closed
+jobs:
+  Dev_Deployment:
+    runs-on: ubuntu-latest
+    environment: Development
+    steps:
+      - name: deploy
+        run: echo "hello dev"

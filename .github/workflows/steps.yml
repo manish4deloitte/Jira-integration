@@ -1,0 +1,45 @@
+name: step status
+##
+on:
+  workflow_dispatch:
+    inputs:
+      workflow_file:
+        description: 'Workflow file name'
+        required: true
+        default: 'steps.yml'
+
+jobs:
+  capture_steps:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install PyGithub requests pandas
+
+      - name: Capture Workflow Steps
+        env:
+          ACCESS_TOKEN: ${{ secrets.RELEASE_GIT_TOKEN }}
+        run: |
+          python final.py ${{ github.repository }} ${{ github.sha }} ${{ github.token }} ${{ github.event.inputs.workflow_file }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: workflow_steps_artifact
+          path: workflow_runs_data.csv
+          
+      - name: Upload pivot Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: pivot_table_artifact
+          path: pivot_table.csv
