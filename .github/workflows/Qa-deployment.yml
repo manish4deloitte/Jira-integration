@@ -10,7 +10,7 @@ on:
 jobs:
   qa_deployment:
     runs-on: ubuntu-latest
-
+    environment: Qa
     #steps:
       #- name: Checkout code
         #uses: actions/checkout@v2
