@@ -1,0 +1,31 @@
+name: Fetch Jira file and upload to Repo
+
+on:
+  workflow_dispatch
+   
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Fetch file from Jira
+        env:
+          JIRA_TOKEN: ${{ secrets.JIRA_DEMO_TOKEN }}
+        run: |
+          ls -l 
+          pwd
+          sh ./script.sh
+          
+      - name: Commit files
+        run: |
+          git config user.email "kmanishkundanbhai@deloitte.com"
+          git config user.name "Manish Kalwani"  
+          git add .
+          git commit -a -m "Adding file from JIRA"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.DEMO_TOKEN }}
+          branch: 'demo'
